@@ -9,17 +9,18 @@ Secoes:
   C  Item novo: um jogo do usuario tratado como recem-adicionado.
   D  Listas completas para usuarios sorteados: quem fica sem recomendacao,
      cobertura do catalogo e quais jogos se repetem.
-  E  Qualidade da lista com o escore de produto: esconde um jogo de que o
-     usuario gostou (nota 8+) e mede em que posicao ele aparece, para cada peso
-     do desconto, e quanto os mesmos jogos se repetem entre usuarios.
+  E  Modelo final (minimo 5, peso n / (n + 25) e
+     escore de produto): esconde 10 notas por usuario e mede MAE, MSE e RMSE
+     com intervalo de confianca, correlacao de Spearman, AUC da curva ROC,
+     cobertura de usuarios e de catalogo e diversidade das listas.
 
 Uso:
-    python3 evaluate.py                    # todas as secoes
-    python3 evaluate.py --secoes A,D --workers 4
+    python3 src/evaluate.py                    # todas as secoes
+    python3 src/evaluate.py --secoes A,D --workers 4
 
-O progresso sai no terminal. Os resultados vao para clean/avaliacao.json, que e
-salvo ao fim de cada secao: uma secao que falha nao derruba as outras, e um caso
-que falha so e contado e registrado.
+O progresso sai no terminal. Os resultados vao para resultados/avaliacao.json,
+que e salvo ao fim de cada secao: uma secao que falha nao derruba as outras, e
+um caso que falha so e contado e registrado.
 """
 import argparse
 import collections
@@ -32,19 +33,17 @@ import traceback
 from pathlib import Path
 
 import numpy as np
-from scipy import sparse
+from scipy import sparse, stats
 
 import recommend as rec
 
-OUT = rec.BASE / "clean" / "avaliacao.json"
+OUT = rec.BASE / "resultados" / "avaliacao.json"
 SECTIONS = "ABCDE"
 VARIANTS = [(5, 0), (5, 25), (10, 0), (10, 25)]
 LIST_VARIANTS = [(5, 25), (10, 25)]
 NEW_USER_VISIBLE = (10, 20, 30)
 BANDS = [(1, 4), (5, 9), (10, 19), (20, 49), (50, 99), (100, None)]
-PRODUCT_WEIGHTS = (0.0, 0.25, 0.5, 1.0, 2.0)
 LIKED = 8.0
-CUTOFFS = (10, 50)
 MAX_EXAMPLES = 5
 
 # As secoes aplicam o minimo e o peso por conta propria (veja variant_sims).
@@ -112,7 +111,7 @@ def metrics(pred, truth):
         return None
     err = pred - truth
     return {"n": len(pred), "rmse": round(float(np.sqrt(np.mean(err ** 2))), 4),
-            "mae": round(float(np.mean(np.abs(err))), 4)}
+            "mse": round(float(np.mean(err ** 2)), 4), "mae": round(float(np.mean(np.abs(err))), 4)}
 
 
 def ratio(part, total):
@@ -150,18 +149,6 @@ def game_mean(data, game, hidden=None):
     if hidden is not None:
         total, count = total - hidden, count - 1
     return total / count if count > 0 else None
-
-
-def cutoff(data, game, sims, common):
-    """(10o e 11o vizinhos empatados?, mediana de jogos em comum dos 10 escolhidos)."""
-    start, end = data.by_game.indptr[game], data.by_game.indptr[game + 1]
-    raters = data.by_game.indices[start:end]
-    raters = raters[sims[raters] > 0]
-    order = raters[np.lexsort((common[raters], sims[raters]))]
-    tenth = order[-rec.N_NEIGHBORS]
-    tie = len(order) > rec.N_NEIGHBORS and sims[order[-rec.N_NEIGHBORS - 1]] == sims[tenth] \
-        and common[order[-rec.N_NEIGHBORS - 1]] == common[tenth]
-    return bool(tie), float(np.median(common[order[-rec.N_NEIGHBORS:]]))
 
 
 # --- A: avaliacoes escondidas -------------------------------------------------
@@ -209,9 +196,7 @@ def holdout_case(i):
         sims = variant_sims(raw, common, min_common, weight)
         result = rec.predict_game(data, mean, std, game, sims, common)
         if result is not None:
-            tie, median_common = cutoff(data, game, sims, common)
-            case[name] = {"nota": float(np.clip(result[0], rec.RATING_MIN, rec.RATING_MAX)),
-                          "empate": tie, "comum": median_common}
+            case[name] = {"nota": float(np.clip(result[0], rec.RATING_MIN, rec.RATING_MAX))}
     return case
 
 
@@ -234,8 +219,6 @@ def summarize_holdout(cases):
                 "cobertura": ratio(len(covered), len(group_cases)),
                 "erro_proprio": metrics([c[name]["nota"] for c in covered], [c["real"] for c in covered]),
                 "erro_comum": metrics([c[name]["nota"] for c in shared], truth),
-                "empates_no_corte": ratio(sum(c[name]["empate"] for c in covered), len(covered)),
-                "mediana_jogos_em_comum": float(np.median([c[name]["comum"] for c in covered])) if covered else None,
             }
         summary[group] = out
     return summary
@@ -318,7 +301,6 @@ def new_item_case(task):
         "media_usuario": float(np.delete(row.data, pos).astype(np.float64).mean()),
         "media_jogo": game_mean(DATA, game, hidden=truth),
         "nota": None if result is None else result["nota"],
-        "recomendar": None if result is None else result["recomendar"],
     }
 
 
@@ -329,10 +311,6 @@ def section_c(workers, n_users=3000, min_ratings=20, seed=5):
     covered = [c for c in cases if c["nota"] is not None]
     truth = np.array([c["real"] for c in covered])
     with_game_mean = [c for c in covered if c["media_jogo"] is not None]
-    recommended = np.array([c["recomendar"] for c in covered], bool)
-    liked = truth >= np.array([c["media_usuario"] for c in covered])
-    predicted_gap = np.array([c["nota"] - c["media_usuario"] for c in covered])
-    real_gap = truth - np.array([c["media_usuario"] for c in covered])
     return {
         "resultado": {
             "cobertura": ratio(len(covered), len(cases)),
@@ -340,10 +318,6 @@ def section_c(workers, n_users=3000, min_ratings=20, seed=5):
             "media_usuario": metrics([c["media_usuario"] for c in covered], truth),
             "media_jogo_referencia": metrics([c["media_jogo"] for c in with_game_mean],
                                              [c["real"] for c in with_game_mean]),
-            "fracao_recomendada": ratio(int(recommended.sum()), len(covered)),
-            "gostou_se_recomendado": ratio(int(liked[recommended].sum()), int(recommended.sum())),
-            "gostou_se_nao_recomendado": ratio(int(liked[~recommended].sum()), int((~recommended).sum())),
-            "correlacao": round(float(np.corrcoef(predicted_gap, real_gap)[0, 1]), 4) if len(covered) > 2 else None,
         },
         "usuarios": len(cases),
         "erros": errors,
@@ -371,8 +345,7 @@ def section_d(workers, n_users=400, seed=11):
     users = np.random.default_rng(seed).choice(DATA.by_user.shape[0], n_users, replace=False)
     cases, errors = run_parallel("D", list_case, [int(u) for u in users], workers)
     reviews = dict(zip(DATA.game_ids.tolist(), np.diff(DATA.by_game.indptr).tolist()))
-    summary = {"usuarios": len(cases), "notas_todas_iguais": sum(c["constante"] for c in cases),
-               "mediana_avaliacoes_catalogo": float(np.median(list(reviews.values())))}
+    summary = {"usuarios": len(cases), "notas_todas_iguais": sum(c["constante"] for c in cases)}
     for min_common, weight in LIST_VARIANTS:
         name = variant_name(min_common, weight)
         bands = {}
@@ -396,91 +369,125 @@ def section_d(workers, n_users=400, seed=11):
                 {"jogo": GAMES.at[g, "name"], "listas": n, "fracao": ratio(n, len(tops)), "avaliacoes": reviews[g]}
                 for g, n in counter.most_common(8)
             ],
-            "mediana_avaliacoes_recomendados": float(np.median([reviews[g] for top in tops for g in top]))
-            if tops else None,
         }
     return {"resultado": summary, "erros": errors}
 
 
-# --- E: qualidade da lista e escore de produto --------------------------------
+# --- E: modelo final -----------------------------------------------------------
 
-def position(order, game):
-    """Posicao (1 = primeiro) de game em order, ou None se ele nao esta na lista."""
-    found = np.flatnonzero(order == game)
-    return int(found[0]) + 1 if len(found) else None
-
-
-def list_quality_case(i):
-    data, (user, game) = HOLDOUT["data"], HOLDOUT["tests"][i]
-    row = data.by_user[user]
-    raw, common = raw_pearson(data, row.indices, row.data, exclude=user)
-    sims = variant_sims(raw, common, rec.MIN_COMMON, 25)
-    table, _, _ = rec.rank_unrated(data, data.means[user], data.stds[user], row.indices, sims, common)
-    scored = np.searchsorted(data.game_ids, table["game_id"].to_numpy())
-    case = {"previsto": bool(np.any(scored == game))}
-    for weight in PRODUCT_WEIGHTS:
-        score = table["bruta"].to_numpy() - weight * HOLDOUT["gap"][scored]
-        order = scored[np.lexsort((scored, -score))]
-        case[weight] = {"posicao": position(order, game), "top": data.game_ids[order[:10]].tolist()}
-    unrated = HOLDOUT["by_rank"][~np.isin(HOLDOUT["by_rank"], row.indices)]
-    case["popularidade"] = {"posicao": position(unrated, game), "top": data.game_ids[unrated[:10]].tolist()}
-    return case
-
-
-def summarize_lists(cases, key, reviews):
-    positions = [c[key]["posicao"] for c in cases]
-    found = [p for p in positions if p is not None]
-    tops = [c[key]["top"] for c in cases]
-    counter = collections.Counter(g for top in tops for g in top)
-    out = {f"acerto@{k}": ratio(sum(p <= k for p in found), len(cases)) for k in CUTOFFS}
-    out.update({
-        "mrr": round(float(np.mean([1 / p if p else 0.0 for p in positions])), 5) if cases else None,
-        "mediana_posicao": float(np.median(found)) if found else None,
-        "jogos_distintos_nos_top10": len(counter),
-        "mais_repetidos": [
-            {"jogo": GAMES.at[g, "name"], "fracao": ratio(n, len(tops)), "avaliacoes": reviews[g]}
-            for g, n in counter.most_common(5)
-        ],
-        "mediana_avaliacoes_recomendados": float(np.median([reviews[g] for top in tops for g in top]))
-        if tops else None,
-    })
+def with_interval(pred, truth, rng, resamples=1000):
+    """metrics() mais o intervalo de 95% do RMSE e do MAE por bootstrap dos casos."""
+    out = metrics(pred, truth)
+    if out is None:
+        return None
+    err = np.asarray(pred, dtype=float) - np.asarray(truth, dtype=float)
+    picks = rng.integers(len(err), size=(resamples, len(err)))
+    rmse = np.sqrt(np.mean(err[picks] ** 2, axis=1))
+    mae = np.mean(np.abs(err[picks]), axis=1)
+    out["rmse_ic95"] = [round(float(v), 4) for v in np.percentile(rmse, [2.5, 97.5])]
+    out["mae_ic95"] = [round(float(v), 4) for v in np.percentile(mae, [2.5, 97.5])]
     return out
 
 
-def section_e(workers, n_users=1000, min_ratings=20, seed=13):
+def auc(scores, positive):
+    """Area sob a curva ROC: chance de um caso positivo ter pontuacao maior que um negativo."""
+    scores, positive = np.asarray(scores, dtype=float), np.asarray(positive, bool)
+    n_pos, n_neg = positive.sum(), (~positive).sum()
+    if n_pos == 0 or n_neg == 0:
+        return None
+    ranks = stats.rankdata(scores)
+    return round(float((ranks[positive].sum() - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg)), 4)
+
+
+def intra_list_similarity(game_ids):
+    """Jaccard medio de categorias e mecanicas entre os pares da lista (menor = mais diversa)."""
+    feats = GAMES["features"].reindex(game_ids).tolist()
+    sims = [len(a & b) / len(a | b) for i, a in enumerate(feats) for b in feats[i + 1:] if a | b]
+    return float(np.mean(sims)) if sims else None
+
+
+def final_model_case(i):
+    data, (user, games, truths) = HOLDOUT["data"], HOLDOUT["tests"][i]
+    case = {"real": truths, "media_jogo": [game_mean(data, g) for g in games],
+            "media_usuario": float(data.means[user]), "previsto": [None] * len(games), "top": []}
+    if data.stds[user] < rec.EPS:
+        return case
+    row = data.by_user[user]
+    raw, common = raw_pearson(data, row.indices, row.data, exclude=user)
+    sims = variant_sims(raw, common, rec.MIN_COMMON, 25)
+    mean, std = data.means[user], data.stds[user]
+    for j, game in enumerate(games):
+        result = rec.predict_game(data, mean, std, game, sims, common)
+        if result is not None:
+            case["previsto"][j] = float(np.clip(result[0], rec.RATING_MIN, rec.RATING_MAX))
+    table, _, _ = rec.rank_unrated(data, mean, std, row.indices, sims, common, rec.N_NEIGHBORS, HOLDOUT["gap"])
+    case["top"] = table["game_id"].astype(int).tolist()
+    return case
+
+
+def section_e(workers, n_users=400, hidden=10, min_ratings=30, seed=17):
     global HOLDOUT
     by_user = DATA.by_user
     counts = np.diff(by_user.indptr)
     rng = np.random.default_rng(seed)
+    users = rng.choice(np.flatnonzero((counts >= min_ratings) & (DATA.stds >= rec.EPS)), n_users, replace=False)
     keep = np.ones(by_user.nnz, bool)
     tests = []
-    for user in rng.permutation(np.flatnonzero(counts >= min_ratings)):
-        start, end = by_user.indptr[user], by_user.indptr[user + 1]
-        liked = start + np.flatnonzero(by_user.data[start:end] >= LIKED)
-        if DATA.stds[user] < rec.EPS or len(liked) == 0:
-            continue
-        pos = rng.choice(liked)
+    for user in users:
+        pos = by_user.indptr[user] + rng.choice(counts[user], hidden, replace=False)
         keep[pos] = False
-        tests.append((int(user), int(by_user.indices[pos])))
-        if len(tests) == n_users:
-            break
+        tests.append((int(user), by_user.indices[pos].tolist(), by_user.data[pos].astype(float).tolist()))
 
-    log("Escondendo um jogo de que cada usuario gostou...")
-    ranks = GAMES["board_game_rank"].reindex(DATA.game_ids).to_numpy()
-    HOLDOUT = {
-        "data": without(DATA, keep),
-        "tests": tests,
-        "gap": rec.product_penalty(DATA, GAMES, weight=1.0),
-        "by_rank": np.argsort(ranks, kind="stable"),
-    }
-    cases, errors = run_parallel("E", list_quality_case, list(range(len(tests))), workers)
+    log(f"Escondendo {hidden} notas de cada usuario...")
+    HOLDOUT = {"data": without(DATA, keep), "tests": tests, "gap": rec.product_penalty(DATA, GAMES, weight=1.0)}
+    cases, errors = run_parallel("E", final_model_case, list(range(len(tests))), workers)
     HOLDOUT = None
-    reviews = dict(zip(DATA.game_ids.tolist(), np.diff(DATA.by_game.indptr).tolist()))
-    summary = {"usuarios": len(cases), "jogo_escondido_previsto": ratio(sum(c["previsto"] for c in cases), len(cases))}
-    for weight in PRODUCT_WEIGHTS:
-        summary[f"peso_{weight}"] = summarize_lists(cases, weight, reviews)
-    summary["so_popularidade"] = summarize_lists(cases, "popularidade", reviews)
-    return {"resultado": summary, "erros": errors}
+
+    pairs = [(p, r, g, c["media_usuario"]) for c in cases
+             for p, r, g in zip(c["previsto"], c["real"], c["media_jogo"]) if p is not None and g is not None]
+    pred, truth, by_game, by_user_mean = (np.array(v, dtype=float) for v in zip(*pairs))
+    liked = truth >= LIKED
+    spearman = []
+    for c in cases:
+        ok = [(p, r) for p, r in zip(c["previsto"], c["real"]) if p is not None]
+        if len(ok) >= 3 and np.ptp([p for p, _ in ok]) > 0 and np.ptp([r for _, r in ok]) > 0:
+            spearman.append(stats.spearmanr(*zip(*ok))[0])
+
+    tops = [c["top"] for c in cases if len(c["top"]) == rec.N_NEIGHBORS]
+    recommended = [g for top in tops for g in top]
+    diversity = [s for s in (intra_list_similarity(top) for top in tops) if s is not None]
+    total_hidden = sum(len(c["real"]) for c in cases)
+    return {
+        "resultado": {
+            "acuracia_rating": {
+                "modelo": with_interval(pred, truth, rng),
+                "media_usuario": with_interval(by_user_mean, truth, rng),
+                "media_jogo": with_interval(by_game, truth, rng),
+                "cobertura_notas": ratio(len(pred), total_hidden),
+            },
+            "acuracia_ranking": {
+                "spearman_medio": round(float(np.mean(spearman)), 4) if spearman else None,
+                "spearman_mediano": round(float(np.median(spearman)), 4) if spearman else None,
+                "usuarios_spearman": len(spearman),
+                "auc_modelo": auc(pred, liked),
+                "auc_media_jogo": auc(by_game, liked),
+                "fracao_gostou": ratio(int(liked.sum()), len(liked)),
+            },
+            "cobertura": {
+                "usuarios_com_top10": ratio(len(tops), len(cases)),
+                "catalogo": ratio(len(set(recommended)), len(DATA.game_ids)),
+                "jogos_distintos": len(set(recommended)),
+            },
+            "diversidade": {
+                "similaridade_media_na_lista": round(float(np.mean(diversity)), 4) if diversity else None,
+                "similaridade_media_aleatoria": round(float(np.mean(
+                    [intra_list_similarity(rng.choice(DATA.game_ids, rec.N_NEIGHBORS, replace=False).tolist())
+                     for _ in range(500)])), 4),
+            },
+        },
+        "usuarios": len(cases),
+        "erros": errors,
+    }
 
 
 # --- execucao ------------------------------------------------------------------

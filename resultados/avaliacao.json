@@ -1,0 +1,556 @@
+{
+  "A": {
+    "status": "ok",
+    "resultado": {
+      "20+": {
+        "casos": 3000,
+        "conjunto_comum": 2953,
+        "media_usuario": {
+          "n": 2953,
+          "rmse": 1.4046,
+          "mae": 1.0732
+        },
+        "media_jogo": {
+          "n": 2953,
+          "rmse": 1.3914,
+          "mae": 1.0479
+        },
+        "min5_sem_peso": {
+          "cobertura": 0.995,
+          "erro_proprio": {
+            "n": 2985,
+            "rmse": 1.3467,
+            "mae": 0.9941
+          },
+          "erro_comum": {
+            "n": 2953,
+            "rmse": 1.3439,
+            "mae": 0.9917
+          }
+        },
+        "min5_peso": {
+          "cobertura": 0.995,
+          "erro_proprio": {
+            "n": 2985,
+            "rmse": 1.2903,
+            "mae": 0.9434
+          },
+          "erro_comum": {
+            "n": 2953,
+            "rmse": 1.2861,
+            "mae": 0.9403
+          }
+        },
+        "min10_sem_peso": {
+          "cobertura": 0.9843,
+          "erro_proprio": {
+            "n": 2953,
+            "rmse": 1.307,
+            "mae": 0.9638
+          },
+          "erro_comum": {
+            "n": 2953,
+            "rmse": 1.307,
+            "mae": 0.9638
+          }
+        },
+        "min10_peso": {
+          "cobertura": 0.9843,
+          "erro_proprio": {
+            "n": 2953,
+            "rmse": 1.2841,
+            "mae": 0.9394
+          },
+          "erro_comum": {
+            "n": 2953,
+            "rmse": 1.2841,
+            "mae": 0.9394
+          }
+        }
+      },
+      "6-19": {
+        "casos": 3000,
+        "conjunto_comum": 1088,
+        "media_usuario": {
+          "n": 1088,
+          "rmse": 1.4385,
+          "mae": 1.0854
+        },
+        "media_jogo": {
+          "n": 1088,
+          "rmse": 1.3895,
+          "mae": 1.0674
+        },
+        "min5_sem_peso": {
+          "cobertura": 0.8573,
+          "erro_proprio": {
+            "n": 2572,
+            "rmse": 1.4092,
+            "mae": 1.0216
+          },
+          "erro_comum": {
+            "n": 1088,
+            "rmse": 1.3265,
+            "mae": 0.9735
+          }
+        },
+        "min5_peso": {
+          "cobertura": 0.8573,
+          "erro_proprio": {
+            "n": 2572,
+            "rmse": 1.411,
+            "mae": 1.0268
+          },
+          "erro_comum": {
+            "n": 1088,
+            "rmse": 1.3269,
+            "mae": 0.9774
+          }
+        },
+        "min10_sem_peso": {
+          "cobertura": 0.3627,
+          "erro_proprio": {
+            "n": 1088,
+            "rmse": 1.3471,
+            "mae": 0.9883
+          },
+          "erro_comum": {
+            "n": 1088,
+            "rmse": 1.3471,
+            "mae": 0.9883
+          }
+        },
+        "min10_peso": {
+          "cobertura": 0.3627,
+          "erro_proprio": {
+            "n": 1088,
+            "rmse": 1.34,
+            "mae": 0.9887
+          },
+          "erro_comum": {
+            "n": 1088,
+            "rmse": 1.34,
+            "mae": 0.9887
+          }
+        }
+      }
+    },
+    "erros": {
+      "total": 0,
+      "exemplos": {}
+    },
+    "segundos": 486.4
+  },
+  "B": {
+    "status": "ok",
+    "resultado": {
+      "10_notas": {
+        "min5_peso": {
+          "cobertura": 0.9345,
+          "modelo": {
+            "n": 1869,
+            "rmse": 1.3697,
+            "mae": 1.0141
+          },
+          "media_visivel": {
+            "n": 1869,
+            "rmse": 1.4459,
+            "mae": 1.1087
+          },
+          "media_jogo": {
+            "n": 1869,
+            "rmse": 1.3259,
+            "mae": 1.0058
+          }
+        },
+        "min10_peso": {
+          "cobertura": 0.183,
+          "modelo": {
+            "n": 366,
+            "rmse": 1.3839,
+            "mae": 1.0539
+          },
+          "media_visivel": {
+            "n": 366,
+            "rmse": 1.4497,
+            "mae": 1.1115
+          },
+          "media_jogo": {
+            "n": 366,
+            "rmse": 1.2807,
+            "mae": 1.0122
+          }
+        }
+      },
+      "20_notas": {
+        "min5_peso": {
+          "cobertura": 0.9845,
+          "modelo": {
+            "n": 1969,
+            "rmse": 1.3047,
+            "mae": 0.9654
+          },
+          "media_visivel": {
+            "n": 1969,
+            "rmse": 1.3968,
+            "mae": 1.0663
+          },
+          "media_jogo": {
+            "n": 1969,
+            "rmse": 1.3238,
+            "mae": 1.0044
+          }
+        },
+        "min10_peso": {
+          "cobertura": 0.925,
+          "modelo": {
+            "n": 1850,
+            "rmse": 1.3084,
+            "mae": 0.9658
+          },
+          "media_visivel": {
+            "n": 1850,
+            "rmse": 1.4026,
+            "mae": 1.0708
+          },
+          "media_jogo": {
+            "n": 1850,
+            "rmse": 1.323,
+            "mae": 1.0039
+          }
+        }
+      },
+      "30_notas": {
+        "min5_peso": {
+          "cobertura": 0.993,
+          "modelo": {
+            "n": 1986,
+            "rmse": 1.3087,
+            "mae": 0.9679
+          },
+          "media_visivel": {
+            "n": 1986,
+            "rmse": 1.398,
+            "mae": 1.0592
+          },
+          "media_jogo": {
+            "n": 1986,
+            "rmse": 1.3353,
+            "mae": 1.0106
+          }
+        },
+        "min10_peso": {
+          "cobertura": 0.974,
+          "modelo": {
+            "n": 1948,
+            "rmse": 1.2932,
+            "mae": 0.9575
+          },
+          "media_visivel": {
+            "n": 1948,
+            "rmse": 1.3797,
+            "mae": 1.049
+          },
+          "media_jogo": {
+            "n": 1948,
+            "rmse": 1.3241,
+            "mae": 1.0055
+          }
+        }
+      }
+    },
+    "usuarios": 2000,
+    "erros": {
+      "total": 0,
+      "exemplos": {}
+    },
+    "segundos": 212.1
+  },
+  "C": {
+    "status": "ok",
+    "resultado": {
+      "cobertura": 0.9977,
+      "modelo": {
+        "n": 2993,
+        "rmse": 1.3758,
+        "mse": 1.8927,
+        "mae": 1.0247
+      },
+      "media_usuario": {
+        "n": 2993,
+        "rmse": 1.412,
+        "mse": 1.9938,
+        "mae": 1.0589
+      },
+      "media_jogo_referencia": {
+        "n": 2993,
+        "rmse": 1.3835,
+        "mse": 1.9141,
+        "mae": 1.0404
+      }
+    },
+    "usuarios": 3000,
+    "erros": {
+      "total": 0,
+      "exemplos": {}
+    },
+    "segundos": 1.1
+  },
+  "D": {
+    "status": "ok",
+    "resultado": {
+      "usuarios": 400,
+      "notas_todas_iguais": 107,
+      "min5_peso": {
+        "faixas": {
+          "1-4": {
+            "usuarios": 151,
+            "sem_recomendacao": 151,
+            "mediana_cobertura": null
+          },
+          "5-9": {
+            "usuarios": 53,
+            "sem_recomendacao": 9,
+            "mediana_cobertura": 0.298
+          },
+          "10-19": {
+            "usuarios": 42,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.6729
+          },
+          "20-49": {
+            "usuarios": 64,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.887
+          },
+          "50-99": {
+            "usuarios": 41,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.9677
+          },
+          "100-mais": {
+            "usuarios": 49,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.9882
+          }
+        },
+        "usuarios_com_lista": 240,
+        "jogos_distintos_nos_top10": 366,
+        "mais_repetidos": [
+          {
+            "jogo": "Arydia: The Paths We Dare Tread",
+            "listas": 168,
+            "fracao": 0.7,
+            "avaliacoes": 498
+          },
+          {
+            "jogo": "Clank! Legacy 2: Acquisitions Incorporated – Darkest Magic",
+            "listas": 131,
+            "fracao": 0.5458,
+            "avaliacoes": 199
+          },
+          {
+            "jogo": "On to Richmond II: The Union Strikes South",
+            "listas": 111,
+            "fracao": 0.4625,
+            "avaliacoes": 107
+          },
+          {
+            "jogo": "The Cones of Dunshire",
+            "listas": 91,
+            "fracao": 0.3792,
+            "avaliacoes": 98
+          },
+          {
+            "jogo": "Aeon's End: The Descent",
+            "listas": 86,
+            "fracao": 0.3583,
+            "avaliacoes": 73
+          },
+          {
+            "jogo": "System Gateway (fan expansion for Android: Netrunner)",
+            "listas": 77,
+            "fracao": 0.3208,
+            "avaliacoes": 724
+          },
+          {
+            "jogo": "Frosthaven",
+            "listas": 55,
+            "fracao": 0.2292,
+            "avaliacoes": 7997
+          },
+          {
+            "jogo": "Axis Empires: Ultimate Edition",
+            "listas": 50,
+            "fracao": 0.2083,
+            "avaliacoes": 103
+          }
+        ]
+      },
+      "min10_peso": {
+        "faixas": {
+          "1-4": {
+            "usuarios": 151,
+            "sem_recomendacao": 151,
+            "mediana_cobertura": null
+          },
+          "5-9": {
+            "usuarios": 53,
+            "sem_recomendacao": 53,
+            "mediana_cobertura": null
+          },
+          "10-19": {
+            "usuarios": 42,
+            "sem_recomendacao": 8,
+            "mediana_cobertura": 0.3127
+          },
+          "20-49": {
+            "usuarios": 64,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.7121
+          },
+          "50-99": {
+            "usuarios": 41,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.9151
+          },
+          "100-mais": {
+            "usuarios": 49,
+            "sem_recomendacao": 0,
+            "mediana_cobertura": 0.9691
+          }
+        },
+        "usuarios_com_lista": 188,
+        "jogos_distintos_nos_top10": 321,
+        "mais_repetidos": [
+          {
+            "jogo": "Arydia: The Paths We Dare Tread",
+            "listas": 131,
+            "fracao": 0.6968,
+            "avaliacoes": 498
+          },
+          {
+            "jogo": "Clank! Legacy 2: Acquisitions Incorporated – Darkest Magic",
+            "listas": 109,
+            "fracao": 0.5798,
+            "avaliacoes": 199
+          },
+          {
+            "jogo": "On to Richmond II: The Union Strikes South",
+            "listas": 79,
+            "fracao": 0.4202,
+            "avaliacoes": 107
+          },
+          {
+            "jogo": "Aeon's End: The Descent",
+            "listas": 63,
+            "fracao": 0.3351,
+            "avaliacoes": 73
+          },
+          {
+            "jogo": "The Cones of Dunshire",
+            "listas": 62,
+            "fracao": 0.3298,
+            "avaliacoes": 98
+          },
+          {
+            "jogo": "System Gateway (fan expansion for Android: Netrunner)",
+            "listas": 61,
+            "fracao": 0.3245,
+            "avaliacoes": 724
+          },
+          {
+            "jogo": "Agemonia",
+            "listas": 45,
+            "fracao": 0.2394,
+            "avaliacoes": 788
+          },
+          {
+            "jogo": "Frosthaven",
+            "listas": 43,
+            "fracao": 0.2287,
+            "avaliacoes": 7997
+          }
+        ]
+      }
+    },
+    "erros": {
+      "total": 0,
+      "exemplos": {}
+    },
+    "segundos": 682.9
+  },
+  "E": {
+    "status": "ok",
+    "resultado": {
+      "acuracia_rating": {
+        "modelo": {
+          "n": 3995,
+          "rmse": 1.2835,
+          "mse": 1.6475,
+          "mae": 0.9554,
+          "rmse_ic95": [
+            1.2419,
+            1.3219
+          ],
+          "mae_ic95": [
+            0.9275,
+            0.9826
+          ]
+        },
+        "media_usuario": {
+          "n": 3995,
+          "rmse": 1.4058,
+          "mse": 1.9763,
+          "mae": 1.0637,
+          "rmse_ic95": [
+            1.3642,
+            1.4495
+          ],
+          "mae_ic95": [
+            1.0352,
+            1.0917
+          ]
+        },
+        "media_jogo": {
+          "n": 3995,
+          "rmse": 1.3549,
+          "mse": 1.8359,
+          "mae": 1.0237,
+          "rmse_ic95": [
+            1.3149,
+            1.396
+          ],
+          "mae_ic95": [
+            0.9963,
+            1.0505
+          ]
+        },
+        "cobertura_notas": 0.9988
+      },
+      "acuracia_ranking": {
+        "spearman_medio": 0.4751,
+        "spearman_mediano": 0.5268,
+        "usuarios_spearman": 398,
+        "auc_modelo": 0.7908,
+        "auc_media_jogo": 0.7404,
+        "fracao_gostou": 0.432
+      },
+      "cobertura": {
+        "usuarios_com_top10": 1.0,
+        "catalogo": 0.0094,
+        "jogos_distintos": 262
+      },
+      "diversidade": {
+        "similaridade_media_na_lista": 0.1161,
+        "similaridade_media_aleatoria": 0.0478
+      }
+    },
+    "usuarios": 400,
+    "erros": {
+      "total": 0,
+      "exemplos": {}
+    },
+    "segundos": 379.1
+  }
+}
