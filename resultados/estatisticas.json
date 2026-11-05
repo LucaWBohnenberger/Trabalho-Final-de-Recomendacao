@@ -1,0 +1,213 @@
+{
+  "avaliacoes": {
+    "usuarios": 555415,
+    "jogos": 27780,
+    "avaliacoes": 26195766,
+    "esparsidade": 0.998302220613003,
+    "nota": {
+      "media": 7.12785959626109,
+      "mediana": 7.0,
+      "desvio": 1.5871064397653836,
+      "fracao_inteiras": 0.8300124531575065
+    },
+    "histograma_notas": {
+      "1": 118646,
+      "2": 199234,
+      "3": 405170,
+      "4": 850818,
+      "5": 1724410,
+      "6": 4808200,
+      "7": 6354325,
+      "8": 7461451,
+      "9": 2690941,
+      "10": 1582571
+    },
+    "por_usuario": {
+      "media": 47.16431137077681,
+      "mediana": 11.0,
+      "max": 16769,
+      "p90": 117.0,
+      "p99": 532.0
+    },
+    "por_jogo": {
+      "media": 942.9721382289417,
+      "mediana": 125.0,
+      "max": 131303,
+      "p90": 1563.1000000000022,
+      "p99": 16288.229999999945
+    },
+    "faixas_usuario": {
+      "1": 114496,
+      "2-4": 84431,
+      "5-9": 64087,
+      "10-19": 72112,
+      "20-49": 96085,
+      "50-99": 57973,
+      "100-499": 59874,
+      "500+": 6357
+    },
+    "faixas_jogo": {
+      "1-29": 0,
+      "30-99": 12123,
+      "100-999": 11820,
+      "1000-9999": 3348,
+      "10000+": 489
+    },
+    "fracao_no_top1pct_jogos": 0.3575226240759671,
+    "fracao_no_top10pct_jogos": 0.7805061703482922,
+    "usuarios_notas_iguais": 138300,
+    "mais_avaliados": [
+      {
+        "jogo": "CATAN",
+        "avaliacoes": 131303
+      },
+      {
+        "jogo": "Carcassonne",
+        "avaliacoes": 131205
+      },
+      {
+        "jogo": "Pandemic",
+        "avaliacoes": 128952
+      },
+      {
+        "jogo": "7 Wonders",
+        "avaliacoes": 107527
+      },
+      {
+        "jogo": "Terraforming Mars",
+        "avaliacoes": 103950
+      },
+      {
+        "jogo": "Wingspan",
+        "avaliacoes": 100041
+      },
+      {
+        "jogo": "7 Wonders Duel",
+        "avaliacoes": 99667
+      },
+      {
+        "jogo": "Azul",
+        "avaliacoes": 96517
+      },
+      {
+        "jogo": "Codenames",
+        "avaliacoes": 96081
+      },
+      {
+        "jogo": "Dominion",
+        "avaliacoes": 92964
+      }
+    ]
+  },
+  "jogos": {
+    "por_ano": {
+      "<1980": 1360,
+      "80s": 1410,
+      "90s": 2164,
+      "00-04": 1910,
+      "05-09": 2939,
+      "10-14": 4379,
+      "15-19": 7162,
+      "20+": 6214
+    },
+    "complexidade_media": 1.9761358718756872,
+    "por_complexidade": {
+      "(0.0, 1.5]": 9937,
+      "(1.5, 2.0]": 6358,
+      "(2.0, 2.5]": 4558,
+      "(2.5, 3.0]": 3454,
+      "(3.0, 3.5]": 1674,
+      "(3.5, 4.0]": 897,
+      "(4.0, 5.0]": 408
+    },
+    "duracao_mediana": 45.0,
+    "categorias": 84,
+    "mecanicas": 192,
+    "top_categorias": [
+      [
+        "Card Game",
+        8579
+      ],
+      [
+        "Wargame",
+        4567
+      ],
+      [
+        "Fantasy",
+        3527
+      ],
+      [
+        "Party Game",
+        2665
+      ],
+      [
+        "Dice",
+        2427
+      ],
+      [
+        "Children's Game",
+        2220
+      ],
+      [
+        "Science Fiction",
+        2099
+      ],
+      [
+        "Fighting",
+        2040
+      ],
+      [
+        "Abstract Strategy",
+        1984
+      ],
+      [
+        "Animals",
+        1939
+      ]
+    ],
+    "top_mecanicas": [
+      [
+        "Dice Rolling",
+        7652
+      ],
+      [
+        "Hand Management",
+        5713
+      ],
+      [
+        "Set Collection",
+        3836
+      ],
+      [
+        "Variable Player Powers",
+        3443
+      ],
+      [
+        "Hexagon Grid",
+        2929
+      ],
+      [
+        "Simulation",
+        2576
+      ],
+      [
+        "Open Drafting",
+        2487
+      ],
+      [
+        "Cooperative Game",
+        2434
+      ],
+      [
+        "Tile Placement",
+        2325
+      ],
+      [
+        "Grid Movement",
+        2202
+      ]
+    ],
+    "sem_categoria": 372,
+    "sem_mecanica": 1765
+  }
+}
