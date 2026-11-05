@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Interface web para testar o recomendador (recommend.py).
 
-Uso:    python3 app.py [--porta 8000]
+Uso:    python3 src/app.py [--porta 8000]
 Depois: http://127.0.0.1:8000
 """
 import argparse

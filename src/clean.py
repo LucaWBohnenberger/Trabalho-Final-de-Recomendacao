@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Limpeza da coleta 2025 do BoardGameGeek.
 
-Entrada:  games_detailed_info2025.csv, bgg-26m-reviews.csv
-Saida:    clean/games.csv, clean/reviews.csv (os originais nao sao alterados)
+Entrada:  data/raw/games_detailed_info2025.csv, data/raw/bgg-26m-reviews.csv
+Saida:    data/clean/games.csv, data/clean/reviews.csv (os originais nao sao alterados)
 
-Uso:      python3 clean.py
+Uso:      python3 src/clean.py
 
 Para ler as saidas sem transformar usuarios como "NA" ou "null" em valor nulo:
 
@@ -20,10 +20,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-BASE = Path(__file__).resolve().parent
-GAMES_IN = BASE / "games_detailed_info2025.csv"
-REVIEWS_IN = BASE / "bgg-26m-reviews.csv"
-OUT_DIR = BASE / "clean"
+BASE = Path(__file__).resolve().parent.parent
+GAMES_IN = BASE / "data" / "raw" / "games_detailed_info2025.csv"
+REVIEWS_IN = BASE / "data" / "raw" / "bgg-26m-reviews.csv"
+OUT_DIR = BASE / "data" / "clean"
 
 CHUNK_SIZE = 1_000_000
 # So o campo vazio e nulo: "NA", "null" e "None" sao nomes de usuario e comentarios validos.

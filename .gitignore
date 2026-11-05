@@ -1,5 +1,7 @@
-# Dados (grandes demais para o GitHub)
-*.csv
-clean/
+# Dados do Kaggle e arquivos gerados por src/clean.py (grandes demais para o GitHub)
+data/
+
+# Material da disciplina
+*.pdf
 
 __pycache__/

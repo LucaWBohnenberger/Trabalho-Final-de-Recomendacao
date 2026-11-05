@@ -20,11 +20,11 @@ Usuario novo pode restringir a lista com filtros de conhecimento (jogadores,
 duracao, idade e complexidade). Item novo usa conteudo: categorias e mecanicas.
 
 Uso:
-    python3 recommend.py                  # escolhe o usuario no terminal
-    python3 recommend.py NOME --top 20    # recomenda direto para NOME
+    python3 src/recommend.py                  # escolhe o usuario no terminal
+    python3 src/recommend.py NOME --top 20    # recomenda direto para NOME
 
-Requer clean/reviews.csv e clean/games.csv, gerados por clean.py. A primeira
-execucao monta clean/ratings_cache.npz, que deixa as seguintes bem mais rapidas.
+Requer data/clean/reviews.csv e data/clean/games.csv, gerados por clean.py. A
+primeira execucao monta data/clean/ratings_cache.npz, que deixa as seguintes bem mais rapidas.
 """
 import argparse
 import json
@@ -35,10 +35,11 @@ import numpy as np
 import pandas as pd
 from scipy import sparse
 
-BASE = Path(__file__).resolve().parent
-REVIEWS = BASE / "clean" / "reviews.csv"
-GAMES = BASE / "clean" / "games.csv"
-CACHE = BASE / "clean" / "ratings_cache.npz"
+BASE = Path(__file__).resolve().parent.parent
+CLEAN = BASE / "data" / "clean"
+REVIEWS = CLEAN / "reviews.csv"
+GAMES = CLEAN / "games.csv"
+CACHE = CLEAN / "ratings_cache.npz"
 
 # So o campo vazio e nulo: "null" e um nome de usuario valido.
 READ_OPTS = {"keep_default_na": False, "na_values": [""]}
