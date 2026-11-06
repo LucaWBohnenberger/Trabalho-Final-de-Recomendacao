@@ -6,7 +6,8 @@ Secoes:
      jogos em comum (5 ou 10) e peso n / (n + 25), em usuarios com 20+ e com
      6 a 19 avaliacoes.
   B  Usuario novo: usuarios reais com so 10, 20 ou 30 notas visiveis.
-  C  Item novo: um jogo do usuario tratado como recem-adicionado.
+  C  Item novo: um jogo do usuario tratado como recem-adicionado (categorias,
+     mecanicas, complexidade, duracao, jogadores e idade).
   D  Listas completas para usuarios sorteados: quem fica sem recomendacao,
      cobertura do catalogo e quais jogos se repetem.
   E  Modelo final (minimo 5, peso n / (n + 25) e
@@ -291,11 +292,10 @@ def new_item_case(task):
     pos = np.random.default_rng(seed).integers(row.nnz)
     game, truth = row.indices[pos], float(row.data[pos])
     game_id = int(DATA.game_ids[game])
-    result = rec.predict_new_item(
-        DATA, GAMES, user,
-        GAMES.at[game_id, "boardgamecategory"], GAMES.at[game_id, "boardgamemechanic"],
-        ignore_game_id=game_id,
-    )
+    info = GAMES.loc[game_id]
+    item = {"categories": info["boardgamecategory"], "mechanics": info["boardgamemechanic"],
+            **{col: info[col] for col in rec.NUMERIC_FEATURES}}
+    result = rec.predict_new_item(DATA, GAMES, user, item, ignore_game_id=game_id)
     return {
         "real": truth,
         "media_usuario": float(np.delete(row.data, pos).astype(np.float64).mean()),

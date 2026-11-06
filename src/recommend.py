@@ -17,7 +17,8 @@ Para um usuario de interesse:
      depois de ordenar.
 
 Usuario novo pode restringir a lista com filtros de conhecimento (jogadores,
-duracao, idade e complexidade). Item novo usa conteudo: categorias e mecanicas.
+duracao, idade e complexidade). Item novo usa conteudo: categorias e mecanicas,
+complexidade, duracao, numero de jogadores e idade minima.
 
 Uso:
     python3 src/recommend.py                  # escolhe o usuario no terminal
@@ -40,9 +41,6 @@ CLEAN = BASE / "data" / "clean"
 REVIEWS = CLEAN / "reviews.csv"
 GAMES = CLEAN / "games.csv"
 CACHE = CLEAN / "ratings_cache.npz"
-
-# So o campo vazio e nulo: "null" e um nome de usuario valido.
-READ_OPTS = {"keep_default_na": False, "na_values": [""]}
 
 N_NEIGHBORS = 10
 MIN_COMMON = 5
@@ -69,7 +67,6 @@ def build_cache():
         REVIEWS,
         usecols=["user", "game_id", "rating"],
         dtype={"user": str, "game_id": np.int32, "rating": np.float32},
-        **READ_OPTS,
     )
     user_idx, users = pd.factorize(df["user"], sort=True)
     game_idx, game_ids = pd.factorize(df["game_id"], sort=True)
@@ -117,7 +114,6 @@ def load_game_info():
             "game_id", "name", "yearpublished", "board_game_rank", "boardgamecategory", "boardgamemechanic",
             "average", "bayesaverage", "minplayers", "maxplayers", "playingtime", "minage", "averageweight",
         ],
-        **READ_OPTS,
     ).set_index("game_id")
     for col in ["boardgamecategory", "boardgamemechanic"]:
         games[col] = [json.loads(v) if isinstance(v, str) else [] for v in games[col]]
@@ -319,15 +315,48 @@ def recommend_new_user(data, games, ratings, top=10, filters=None):
     return fill_with_popular(data, games, table, rated, top, allowed), n_scored, int(np.sum(sims > 0))
 
 
-def predict_new_item(data, games, user, categories, mechanics, ignore_game_id=None, k=N_NEIGHBORS):
+NUMERIC_FEATURES = ["averageweight", "playingtime", "minplayers", "maxplayers", "minage"]
+
+
+def numeric_similarity(new, info):
+    """Semelhanca de 0 a 1 entre o jogo novo e cada linha de info, multiplicando:
+
+      complexidade  1 - |diferenca| / 4 (a escala vai de 1 a 5)
+      duracao       menor / maior
+      jogadores     Jaccard das faixas de jogadores (2-4 contra 3-5: 2 de 4)
+      idade         1 - |diferenca| / 10, no minimo 0
+
+    Caracteristica que falta em um dos lados nao muda o produto.
+    """
+    def value(col):
+        v = new.get(col)
+        return np.nan if v is None else float(v)
+
+    parts = [
+        1 - np.abs(value("averageweight") - info["averageweight"].to_numpy()) / 4,
+        np.minimum(value("playingtime"), info["playingtime"].to_numpy())
+        / np.maximum(value("playingtime"), info["playingtime"].to_numpy()),
+    ]
+    lo, hi = info["minplayers"].to_numpy(), info["maxplayers"].to_numpy()
+    overlap = np.minimum(value("maxplayers"), hi) - np.maximum(value("minplayers"), lo) + 1
+    span = np.maximum(value("maxplayers"), hi) - np.minimum(value("minplayers"), lo) + 1
+    parts.append(np.maximum(overlap, 0) / span)
+    parts.append(np.maximum(0, 1 - np.abs(value("minage") - info["minage"].to_numpy()) / 10))
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return np.prod([np.where(np.isfinite(p), p, 1.0) for p in parts], axis=0)
+
+
+def predict_new_item(data, games, user, item, ignore_game_id=None, k=N_NEIGHBORS):
     """Cenario 3: preve a nota de um jogo sem avaliacoes para um usuario antigo.
 
     Sem avaliacoes nao ha vizinhos, entao a mesma media ponderada de z-scores usa
-    os k jogos do usuario mais parecidos com o novo (Jaccard de categorias e
-    mecanicas). ignore_game_id simula um jogo existente como novo. Devolve None se
-    nenhum jogo do usuario tiver algo em comum com o novo.
+    os k jogos do usuario mais parecidos com o novo. A semelhanca e o Jaccard de
+    categorias e mecanicas vezes numeric_similarity. item tem "categories",
+    "mechanics" e, opcionalmente, as colunas de NUMERIC_FEATURES (None quando
+    falta). ignore_game_id simula um jogo existente como novo. Devolve None se
+    nenhum jogo do usuario tiver categoria ou mecanica em comum com o novo.
     """
-    new = item_features(categories, mechanics)
+    new = item_features(item.get("categories", []), item.get("mechanics", []))
     row = data.by_user[user]
     ids = data.game_ids[row.indices]
     values = row.data.astype(np.float64)
@@ -338,8 +367,9 @@ def predict_new_item(data, games, user, categories, mechanics, ignore_game_id=No
         return None
     mean, std = values.mean(), values.std()
 
-    feature_sets = games["features"].reindex(ids).tolist()
-    sims = np.array([len(new & f) / len(new | f) for f in feature_sets])
+    info = games.reindex(ids)
+    jaccard = np.array([len(new & f) / len(new | f) for f in info["features"]])
+    sims = jaccard * numeric_similarity(item, info)
     top = np.argsort(-sims, kind="stable")[:k]
     top = top[sims[top] > 0]
     if len(top) == 0:

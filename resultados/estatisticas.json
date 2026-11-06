@@ -1,40 +1,36 @@
 {
   "avaliacoes": {
-    "usuarios": 555415,
+    "usuarios": 555414,
     "jogos": 27780,
-    "avaliacoes": 26195766,
-    "esparsidade": 0.998302220613003,
+    "avaliacoes": 26195700,
+    "esparsidade": 0.998302221833769,
     "nota": {
-      "media": 7.12785959626109,
+      "media": 7.127866866108177,
       "mediana": 7.0,
-      "desvio": 1.5871064397653836,
-      "fracao_inteiras": 0.8300124531575065
+      "desvio": 1.587099880898898,
+      "fracao_inteiras": 0.8300120248743115
     },
     "histograma_notas": {
       "1": 118646,
-      "2": 199234,
-      "3": 405170,
-      "4": 850818,
-      "5": 1724410,
-      "6": 4808200,
-      "7": 6354325,
-      "8": 7461451,
-      "9": 2690941,
+      "2": 189840,
+      "3": 414543,
+      "4": 798396,
+      "5": 1776801,
+      "6": 4067119,
+      "7": 7095394,
+      "8": 6836853,
+      "9": 3315537,
       "10": 1582571
     },
     "por_usuario": {
-      "media": 47.16431137077681,
       "mediana": 11.0,
-      "max": 16769,
-      "p90": 117.0,
-      "p99": 532.0
+      "min": 1,
+      "max": 16769
     },
     "por_jogo": {
-      "media": 942.9721382289417,
       "mediana": 125.0,
-      "max": 131303,
-      "p90": 1563.1000000000022,
-      "p99": 16288.229999999945
+      "min": 30,
+      "max": 131302
     },
     "faixas_usuario": {
       "1": 114496,
@@ -42,28 +38,21 @@
       "5-9": 64087,
       "10-19": 72112,
       "20-49": 96085,
-      "50-99": 57973,
+      "50-99": 57972,
       "100-499": 59874,
       "500+": 6357
     },
-    "faixas_jogo": {
-      "1-29": 0,
-      "30-99": 12123,
-      "100-999": 11820,
-      "1000-9999": 3348,
-      "10000+": 489
-    },
-    "fracao_no_top1pct_jogos": 0.3575226240759671,
-    "fracao_no_top10pct_jogos": 0.7805061703482922,
+    "fracao_no_top1pct_jogos": 0.3575226468466199,
+    "fracao_no_top10pct_jogos": 0.7805059609019801,
     "usuarios_notas_iguais": 138300,
     "mais_avaliados": [
       {
         "jogo": "CATAN",
-        "avaliacoes": 131303
+        "avaliacoes": 131302
       },
       {
         "jogo": "Carcassonne",
-        "avaliacoes": 131205
+        "avaliacoes": 131204
       },
       {
         "jogo": "Pandemic",
@@ -95,7 +84,7 @@
       },
       {
         "jogo": "Dominion",
-        "avaliacoes": 92964
+        "avaliacoes": 92963
       }
     ]
   },
@@ -111,15 +100,6 @@
       "20+": 6214
     },
     "complexidade_media": 1.9761358718756872,
-    "por_complexidade": {
-      "(0.0, 1.5]": 9937,
-      "(1.5, 2.0]": 6358,
-      "(2.0, 2.5]": 4558,
-      "(2.5, 3.0]": 3454,
-      "(3.0, 3.5]": 1674,
-      "(3.5, 4.0]": 897,
-      "(4.0, 5.0]": 408
-    },
     "duracao_mediana": 45.0,
     "categorias": 84,
     "mecanicas": 192,
@@ -164,50 +144,6 @@
         "Animals",
         1939
       ]
-    ],
-    "top_mecanicas": [
-      [
-        "Dice Rolling",
-        7652
-      ],
-      [
-        "Hand Management",
-        5713
-      ],
-      [
-        "Set Collection",
-        3836
-      ],
-      [
-        "Variable Player Powers",
-        3443
-      ],
-      [
-        "Hexagon Grid",
-        2929
-      ],
-      [
-        "Simulation",
-        2576
-      ],
-      [
-        "Open Drafting",
-        2487
-      ],
-      [
-        "Cooperative Game",
-        2434
-      ],
-      [
-        "Tile Placement",
-        2325
-      ],
-      [
-        "Grid Movement",
-        2202
-      ]
-    ],
-    "sem_categoria": 372,
-    "sem_mecanica": 1765
+    ]
   }
 }

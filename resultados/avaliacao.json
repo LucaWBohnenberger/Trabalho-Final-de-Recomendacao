@@ -4,67 +4,77 @@
     "resultado": {
       "20+": {
         "casos": 3000,
-        "conjunto_comum": 2953,
+        "conjunto_comum": 2946,
         "media_usuario": {
-          "n": 2953,
-          "rmse": 1.4046,
-          "mae": 1.0732
+          "n": 2946,
+          "rmse": 1.409,
+          "mse": 1.9853,
+          "mae": 1.0767
         },
         "media_jogo": {
-          "n": 2953,
-          "rmse": 1.3914,
-          "mae": 1.0479
+          "n": 2946,
+          "rmse": 1.3996,
+          "mse": 1.9589,
+          "mae": 1.0613
         },
         "min5_sem_peso": {
-          "cobertura": 0.995,
+          "cobertura": 0.9953,
           "erro_proprio": {
-            "n": 2985,
-            "rmse": 1.3467,
-            "mae": 0.9941
+            "n": 2986,
+            "rmse": 1.3355,
+            "mse": 1.7835,
+            "mae": 0.9879
           },
           "erro_comum": {
-            "n": 2953,
-            "rmse": 1.3439,
-            "mae": 0.9917
+            "n": 2946,
+            "rmse": 1.333,
+            "mse": 1.7768,
+            "mae": 0.9851
           }
         },
         "min5_peso": {
-          "cobertura": 0.995,
+          "cobertura": 0.9953,
           "erro_proprio": {
-            "n": 2985,
-            "rmse": 1.2903,
-            "mae": 0.9434
+            "n": 2986,
+            "rmse": 1.2894,
+            "mse": 1.6625,
+            "mae": 0.941
           },
           "erro_comum": {
-            "n": 2953,
-            "rmse": 1.2861,
-            "mae": 0.9403
+            "n": 2946,
+            "rmse": 1.2851,
+            "mse": 1.6514,
+            "mae": 0.9371
           }
         },
         "min10_sem_peso": {
-          "cobertura": 0.9843,
+          "cobertura": 0.982,
           "erro_proprio": {
-            "n": 2953,
-            "rmse": 1.307,
-            "mae": 0.9638
+            "n": 2946,
+            "rmse": 1.3124,
+            "mse": 1.7223,
+            "mae": 0.966
           },
           "erro_comum": {
-            "n": 2953,
-            "rmse": 1.307,
-            "mae": 0.9638
+            "n": 2946,
+            "rmse": 1.3124,
+            "mse": 1.7223,
+            "mae": 0.966
           }
         },
         "min10_peso": {
-          "cobertura": 0.9843,
+          "cobertura": 0.982,
           "erro_proprio": {
-            "n": 2953,
-            "rmse": 1.2841,
-            "mae": 0.9394
+            "n": 2946,
+            "rmse": 1.2858,
+            "mse": 1.6533,
+            "mae": 0.9391
           },
           "erro_comum": {
-            "n": 2953,
-            "rmse": 1.2841,
-            "mae": 0.9394
+            "n": 2946,
+            "rmse": 1.2858,
+            "mse": 1.6533,
+            "mae": 0.9391
           }
         }
       },
@@ -74,50 +84,58 @@
         "media_usuario": {
           "n": 1088,
           "rmse": 1.4385,
+          "mse": 2.0693,
           "mae": 1.0854
         },
         "media_jogo": {
           "n": 1088,
           "rmse": 1.3895,
+          "mse": 1.9308,
           "mae": 1.0674
         },
         "min5_sem_peso": {
           "cobertura": 0.8573,
           "erro_proprio": {
             "n": 2572,
-            "rmse": 1.4092,
-            "mae": 1.0216
+            "rmse": 1.409,
+            "mse": 1.9853,
+            "mae": 1.0215
           },
           "erro_comum": {
             "n": 1088,
-            "rmse": 1.3265,
-            "mae": 0.9735
+            "rmse": 1.3262,
+            "mse": 1.7587,
+            "mae": 0.9732
           }
         },
         "min5_peso": {
           "cobertura": 0.8573,
           "erro_proprio": {
             "n": 2572,
-            "rmse": 1.411,
-            "mae": 1.0268
+            "rmse": 1.4111,
+            "mse": 1.9911,
+            "mae": 1.0269
           },
           "erro_comum": {
             "n": 1088,
             "rmse": 1.3269,
-            "mae": 0.9774
+            "mse": 1.7607,
+            "mae": 0.9775
           }
         },
         "min10_sem_peso": {
           "cobertura": 0.3627,
           "erro_proprio": {
             "n": 1088,
-            "rmse": 1.3471,
-            "mae": 0.9883
+            "rmse": 1.3466,
+            "mse": 1.8132,
+            "mae": 0.988
           },
           "erro_comum": {
             "n": 1088,
-            "rmse": 1.3471,
-            "mae": 0.9883
+            "rmse": 1.3466,
+            "mse": 1.8132,
+            "mae": 0.988
           }
         },
         "min10_peso": {
@@ -125,12 +143,14 @@
           "erro_proprio": {
             "n": 1088,
             "rmse": 1.34,
-            "mae": 0.9887
+            "mse": 1.7957,
+            "mae": 0.9888
           },
           "erro_comum": {
             "n": 1088,
             "rmse": 1.34,
-            "mae": 0.9887
+            "mse": 1.7957,
+            "mae": 0.9888
           }
         }
       }
@@ -139,122 +159,140 @@
       "total": 0,
       "exemplos": {}
     },
-    "segundos": 486.4
+    "segundos": 177.5
   },
   "B": {
     "status": "ok",
     "resultado": {
       "10_notas": {
         "min5_peso": {
-          "cobertura": 0.9345,
+          "cobertura": 0.935,
           "modelo": {
-            "n": 1869,
-            "rmse": 1.3697,
-            "mae": 1.0141
+            "n": 1870,
+            "rmse": 1.387,
+            "mse": 1.9238,
+            "mae": 1.0179
           },
           "media_visivel": {
-            "n": 1869,
-            "rmse": 1.4459,
-            "mae": 1.1087
+            "n": 1870,
+            "rmse": 1.4691,
+            "mse": 2.1582,
+            "mae": 1.1191
           },
           "media_jogo": {
-            "n": 1869,
-            "rmse": 1.3259,
-            "mae": 1.0058
+            "n": 1870,
+            "rmse": 1.3539,
+            "mse": 1.8329,
+            "mae": 1.0142
           }
         },
         "min10_peso": {
-          "cobertura": 0.183,
+          "cobertura": 0.181,
           "modelo": {
-            "n": 366,
-            "rmse": 1.3839,
-            "mae": 1.0539
+            "n": 362,
+            "rmse": 1.4413,
+            "mse": 2.0773,
+            "mae": 1.0706
           },
           "media_visivel": {
-            "n": 366,
-            "rmse": 1.4497,
-            "mae": 1.1115
+            "n": 362,
+            "rmse": 1.503,
+            "mse": 2.2589,
+            "mae": 1.1583
           },
           "media_jogo": {
-            "n": 366,
-            "rmse": 1.2807,
-            "mae": 1.0122
+            "n": 362,
+            "rmse": 1.3071,
+            "mse": 1.7085,
+            "mae": 1.0061
           }
         }
       },
       "20_notas": {
         "min5_peso": {
-          "cobertura": 0.9845,
+          "cobertura": 0.985,
           "modelo": {
-            "n": 1969,
-            "rmse": 1.3047,
-            "mae": 0.9654
+            "n": 1970,
+            "rmse": 1.3487,
+            "mse": 1.8191,
+            "mae": 0.9844
           },
           "media_visivel": {
-            "n": 1969,
-            "rmse": 1.3968,
-            "mae": 1.0663
+            "n": 1970,
+            "rmse": 1.4266,
+            "mse": 2.0353,
+            "mae": 1.0822
           },
           "media_jogo": {
-            "n": 1969,
-            "rmse": 1.3238,
-            "mae": 1.0044
+            "n": 1970,
+            "rmse": 1.3556,
+            "mse": 1.8377,
+            "mae": 1.0158
           }
         },
         "min10_peso": {
-          "cobertura": 0.925,
+          "cobertura": 0.9235,
           "modelo": {
-            "n": 1850,
-            "rmse": 1.3084,
-            "mae": 0.9658
+            "n": 1847,
+            "rmse": 1.3473,
+            "mse": 1.8152,
+            "mae": 0.9834
           },
           "media_visivel": {
-            "n": 1850,
-            "rmse": 1.4026,
-            "mae": 1.0708
+            "n": 1847,
+            "rmse": 1.4265,
+            "mse": 2.0348,
+            "mae": 1.0822
           },
           "media_jogo": {
-            "n": 1850,
-            "rmse": 1.323,
-            "mae": 1.0039
+            "n": 1847,
+            "rmse": 1.3507,
+            "mse": 1.8243,
+            "mae": 1.0121
           }
         }
       },
       "30_notas": {
         "min5_peso": {
-          "cobertura": 0.993,
+          "cobertura": 0.9905,
           "modelo": {
-            "n": 1986,
-            "rmse": 1.3087,
-            "mae": 0.9679
+            "n": 1981,
+            "rmse": 1.3244,
+            "mse": 1.7539,
+            "mae": 0.9758
           },
           "media_visivel": {
-            "n": 1986,
-            "rmse": 1.398,
-            "mae": 1.0592
+            "n": 1981,
+            "rmse": 1.4139,
+            "mse": 1.9992,
+            "mae": 1.0675
           },
           "media_jogo": {
-            "n": 1986,
-            "rmse": 1.3353,
-            "mae": 1.0106
+            "n": 1981,
+            "rmse": 1.3596,
+            "mse": 1.8485,
+            "mae": 1.0185
           }
         },
         "min10_peso": {
           "cobertura": 0.974,
           "modelo": {
             "n": 1948,
-            "rmse": 1.2932,
-            "mae": 0.9575
+            "rmse": 1.318,
+            "mse": 1.7371,
+            "mae": 0.9674
           },
           "media_visivel": {
             "n": 1948,
-            "rmse": 1.3797,
-            "mae": 1.049
+            "rmse": 1.4076,
+            "mse": 1.9813,
+            "mae": 1.0634
           },
           "media_jogo": {
             "n": 1948,
-            "rmse": 1.3241,
-            "mae": 1.0055
+            "rmse": 1.3546,
+            "mse": 1.835,
+            "mae": 1.0152
           }
         }
       }
@@ -264,29 +302,29 @@
       "total": 0,
       "exemplos": {}
     },
-    "segundos": 212.1
+    "segundos": 76.8
   },
   "C": {
     "status": "ok",
     "resultado": {
-      "cobertura": 0.9977,
+      "cobertura": 0.9983,
       "modelo": {
-        "n": 2993,
-        "rmse": 1.3758,
-        "mse": 1.8927,
-        "mae": 1.0247
+        "n": 2995,
+        "rmse": 1.3412,
+        "mse": 1.7989,
+        "mae": 0.9792
       },
       "media_usuario": {
-        "n": 2993,
-        "rmse": 1.412,
-        "mse": 1.9938,
-        "mae": 1.0589
+        "n": 2995,
+        "rmse": 1.4064,
+        "mse": 1.978,
+        "mae": 1.0532
       },
       "media_jogo_referencia": {
-        "n": 2993,
-        "rmse": 1.3835,
-        "mse": 1.9141,
-        "mae": 1.0404
+        "n": 2995,
+        "rmse": 1.3828,
+        "mse": 1.9122,
+        "mae": 1.0394
       }
     },
     "usuarios": 3000,
@@ -294,95 +332,95 @@
       "total": 0,
       "exemplos": {}
     },
-    "segundos": 1.1
+    "segundos": 0.8
   },
   "D": {
     "status": "ok",
     "resultado": {
       "usuarios": 400,
-      "notas_todas_iguais": 107,
+      "notas_todas_iguais": 117,
       "min5_peso": {
         "faixas": {
           "1-4": {
-            "usuarios": 151,
-            "sem_recomendacao": 151,
+            "usuarios": 161,
+            "sem_recomendacao": 161,
             "mediana_cobertura": null
           },
           "5-9": {
-            "usuarios": 53,
+            "usuarios": 54,
             "sem_recomendacao": 9,
-            "mediana_cobertura": 0.298
+            "mediana_cobertura": 0.3007
           },
           "10-19": {
-            "usuarios": 42,
+            "usuarios": 44,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.6729
+            "mediana_cobertura": 0.599
           },
           "20-49": {
-            "usuarios": 64,
+            "usuarios": 67,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.887
+            "mediana_cobertura": 0.8915
           },
           "50-99": {
-            "usuarios": 41,
+            "usuarios": 30,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.9677
+            "mediana_cobertura": 0.9626
           },
           "100-mais": {
-            "usuarios": 49,
+            "usuarios": 44,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.9882
+            "mediana_cobertura": 0.9892
           }
         },
-        "usuarios_com_lista": 240,
-        "jogos_distintos_nos_top10": 366,
+        "usuarios_com_lista": 230,
+        "jogos_distintos_nos_top10": 371,
         "mais_repetidos": [
           {
             "jogo": "Arydia: The Paths We Dare Tread",
-            "listas": 168,
-            "fracao": 0.7,
+            "listas": 166,
+            "fracao": 0.7217,
             "avaliacoes": 498
           },
           {
             "jogo": "Clank! Legacy 2: Acquisitions Incorporated – Darkest Magic",
-            "listas": 131,
-            "fracao": 0.5458,
+            "listas": 122,
+            "fracao": 0.5304,
             "avaliacoes": 199
           },
           {
             "jogo": "On to Richmond II: The Union Strikes South",
-            "listas": 111,
-            "fracao": 0.4625,
+            "listas": 105,
+            "fracao": 0.4565,
             "avaliacoes": 107
           },
           {
-            "jogo": "The Cones of Dunshire",
-            "listas": 91,
-            "fracao": 0.3792,
-            "avaliacoes": 98
-          },
-          {
             "jogo": "Aeon's End: The Descent",
-            "listas": 86,
-            "fracao": 0.3583,
+            "listas": 81,
+            "fracao": 0.3522,
             "avaliacoes": 73
           },
           {
             "jogo": "System Gateway (fan expansion for Android: Netrunner)",
-            "listas": 77,
-            "fracao": 0.3208,
+            "listas": 80,
+            "fracao": 0.3478,
             "avaliacoes": 724
           },
           {
+            "jogo": "The Cones of Dunshire",
+            "listas": 69,
+            "fracao": 0.3,
+            "avaliacoes": 98
+          },
+          {
             "jogo": "Frosthaven",
-            "listas": 55,
-            "fracao": 0.2292,
+            "listas": 51,
+            "fracao": 0.2217,
             "avaliacoes": 7997
           },
           {
             "jogo": "Axis Empires: Ultimate Edition",
-            "listas": 50,
-            "fracao": 0.2083,
+            "listas": 46,
+            "fracao": 0.2,
             "avaliacoes": 103
           }
         ]
@@ -390,86 +428,86 @@
       "min10_peso": {
         "faixas": {
           "1-4": {
-            "usuarios": 151,
-            "sem_recomendacao": 151,
+            "usuarios": 161,
+            "sem_recomendacao": 161,
             "mediana_cobertura": null
           },
           "5-9": {
-            "usuarios": 53,
-            "sem_recomendacao": 53,
+            "usuarios": 54,
+            "sem_recomendacao": 54,
             "mediana_cobertura": null
           },
           "10-19": {
-            "usuarios": 42,
-            "sem_recomendacao": 8,
-            "mediana_cobertura": 0.3127
+            "usuarios": 44,
+            "sem_recomendacao": 11,
+            "mediana_cobertura": 0.2496
           },
           "20-49": {
-            "usuarios": 64,
-            "sem_recomendacao": 0,
-            "mediana_cobertura": 0.7121
+            "usuarios": 67,
+            "sem_recomendacao": 1,
+            "mediana_cobertura": 0.7069
           },
           "50-99": {
-            "usuarios": 41,
+            "usuarios": 30,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.9151
+            "mediana_cobertura": 0.9073
           },
           "100-mais": {
-            "usuarios": 49,
+            "usuarios": 44,
             "sem_recomendacao": 0,
-            "mediana_cobertura": 0.9691
+            "mediana_cobertura": 0.9721
           }
         },
-        "usuarios_com_lista": 188,
-        "jogos_distintos_nos_top10": 321,
+        "usuarios_com_lista": 173,
+        "jogos_distintos_nos_top10": 325,
         "mais_repetidos": [
           {
             "jogo": "Arydia: The Paths We Dare Tread",
-            "listas": 131,
-            "fracao": 0.6968,
+            "listas": 120,
+            "fracao": 0.6936,
             "avaliacoes": 498
           },
           {
             "jogo": "Clank! Legacy 2: Acquisitions Incorporated – Darkest Magic",
-            "listas": 109,
-            "fracao": 0.5798,
+            "listas": 93,
+            "fracao": 0.5376,
             "avaliacoes": 199
           },
           {
             "jogo": "On to Richmond II: The Union Strikes South",
-            "listas": 79,
-            "fracao": 0.4202,
+            "listas": 68,
+            "fracao": 0.3931,
             "avaliacoes": 107
           },
           {
+            "jogo": "System Gateway (fan expansion for Android: Netrunner)",
+            "listas": 64,
+            "fracao": 0.3699,
+            "avaliacoes": 724
+          },
+          {
             "jogo": "Aeon's End: The Descent",
-            "listas": 63,
-            "fracao": 0.3351,
+            "listas": 60,
+            "fracao": 0.3468,
             "avaliacoes": 73
           },
           {
             "jogo": "The Cones of Dunshire",
-            "listas": 62,
-            "fracao": 0.3298,
+            "listas": 48,
+            "fracao": 0.2775,
             "avaliacoes": 98
           },
           {
-            "jogo": "System Gateway (fan expansion for Android: Netrunner)",
-            "listas": 61,
-            "fracao": 0.3245,
-            "avaliacoes": 724
+            "jogo": "Frosthaven",
+            "listas": 42,
+            "fracao": 0.2428,
+            "avaliacoes": 7997
           },
           {
             "jogo": "Agemonia",
-            "listas": 45,
-            "fracao": 0.2394,
+            "listas": 42,
+            "fracao": 0.2428,
             "avaliacoes": 788
-          },
-          {
-            "jogo": "Frosthaven",
-            "listas": 43,
-            "fracao": 0.2287,
-            "avaliacoes": 7997
           }
         ]
       }
@@ -478,72 +516,72 @@
       "total": 0,
       "exemplos": {}
     },
-    "segundos": 682.9
+    "segundos": 145.0
   },
   "E": {
     "status": "ok",
     "resultado": {
       "acuracia_rating": {
         "modelo": {
-          "n": 3995,
-          "rmse": 1.2835,
-          "mse": 1.6475,
-          "mae": 0.9554,
+          "n": 3994,
+          "rmse": 1.3093,
+          "mse": 1.7144,
+          "mae": 0.9529,
           "rmse_ic95": [
-            1.2419,
-            1.3219
+            1.2616,
+            1.3593
           ],
           "mae_ic95": [
-            0.9275,
-            0.9826
+            0.9256,
+            0.9816
           ]
         },
         "media_usuario": {
-          "n": 3995,
-          "rmse": 1.4058,
-          "mse": 1.9763,
-          "mae": 1.0637,
+          "n": 3994,
+          "rmse": 1.3998,
+          "mse": 1.9593,
+          "mae": 1.0515,
           "rmse_ic95": [
-            1.3642,
-            1.4495
+            1.3592,
+            1.4435
           ],
           "mae_ic95": [
-            1.0352,
-            1.0917
+            1.0248,
+            1.0817
           ]
         },
         "media_jogo": {
-          "n": 3995,
-          "rmse": 1.3549,
-          "mse": 1.8359,
-          "mae": 1.0237,
+          "n": 3994,
+          "rmse": 1.3781,
+          "mse": 1.8992,
+          "mae": 1.0311,
           "rmse_ic95": [
-            1.3149,
-            1.396
+            1.3387,
+            1.4256
           ],
           "mae_ic95": [
-            0.9963,
-            1.0505
+            1.0049,
+            1.0627
           ]
         },
-        "cobertura_notas": 0.9988
+        "cobertura_notas": 0.9985
       },
       "acuracia_ranking": {
-        "spearman_medio": 0.4751,
-        "spearman_mediano": 0.5268,
-        "usuarios_spearman": 398,
-        "auc_modelo": 0.7908,
-        "auc_media_jogo": 0.7404,
-        "fracao_gostou": 0.432
+        "spearman_medio": 0.4707,
+        "spearman_mediano": 0.5276,
+        "usuarios_spearman": 399,
+        "auc_modelo": 0.7921,
+        "auc_media_jogo": 0.7251,
+        "fracao_gostou": 0.4246
       },
       "cobertura": {
         "usuarios_com_top10": 1.0,
-        "catalogo": 0.0094,
-        "jogos_distintos": 262
+        "catalogo": 0.0098,
+        "jogos_distintos": 272
       },
       "diversidade": {
-        "similaridade_media_na_lista": 0.1161,
-        "similaridade_media_aleatoria": 0.0478
+        "similaridade_media_na_lista": 0.1175,
+        "similaridade_media_aleatoria": 0.0488
       }
     },
     "usuarios": 400,
@@ -551,6 +589,6 @@
       "total": 0,
       "exemplos": {}
     },
-    "segundos": 379.1
+    "segundos": 176.8
   }
 }

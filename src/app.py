@@ -17,6 +17,7 @@ import recommend as rec
 
 MIN_RATINGS_RANDOM_USER = 20
 SEARCH_LIMIT = 10
+USER_SEARCH_LIMIT = 8
 POPULAR_FORM_SIZE = 20
 
 PAGE = """<!doctype html>
@@ -80,8 +81,43 @@ PAGE = """<!doctype html>
   .result { margin-top: 16px; overflow-x: auto; }
   .filters { display: flex; flex-wrap: wrap; gap: 0 16px; }
   .filters label { font-weight: normal; }
+  .filters.off { opacity: 0.45; }
+  .toggle { display: inline-flex; align-items: center; gap: 8px; margin: 16px 0 4px; font-size: 1rem; cursor: pointer; }
+  .toggle input { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); cursor: pointer; }
   .hits { margin-top: 4px; }
   .hits button { display: block; width: min(100%, 420px); margin: 2px 0; text-align: left; }
+  .ac { position: relative; display: inline-block; width: min(100%, 320px); vertical-align: top; }
+  .ac input { width: 100%; }
+  .ac .hits {
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 10; margin: 0; padding: 4px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  }
+  .ac .hits:empty { display: none; }
+  .ac .hits button { width: 100%; margin: 0; border: 0; display: flex; justify-content: space-between; gap: 12px; }
+  .ac .hits button.sel, .ac .hits button:hover { background: var(--bg); }
+  .ac .hits small { color: var(--muted); }
+  .perfil { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 12px; }
+  .perfil div { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; }
+  .perfil b { display: block; font-size: 1.15rem; }
+  .perfil span { color: var(--muted); font-size: 0.8rem; }
+  .aviso { margin: 0 0 8px; }
+  /* Jogos avaliados pelo usuario da secao 3: na lateral esquerda quando cabe, senao no topo. */
+  #item { position: relative; }
+  #rated3 { margin: 0 0 16px; padding: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  #rated3:empty { display: none; }
+  #rated3 h3 { margin: 0 0 2px; }
+  #rated3 p { margin: 0 0 6px; font-size: 0.85rem; }
+  #rated3 .scroll { max-height: 240px; overflow-y: auto; }
+  #rated3 table { margin: 0; font-size: 0.85rem; }
+  #rated3 th { position: sticky; top: 0; background: var(--card); }
+  #rated3 td, #rated3 th { padding: 4px 6px; }
+  #rated3 tr.ignorado td { color: var(--muted); text-decoration: line-through; }
+  @media (min-width: 1240px) {
+    body:has(#item.on) { max-width: 1220px; padding-left: 320px; }
+    #rated3 { position: absolute; top: 0; right: calc(100% + 24px); width: 280px; margin: 0; }
+    #rated3 .scroll { max-height: 70vh; }
+  }
 </style>
 </head>
 <body>
@@ -95,7 +131,7 @@ PAGE = """<!doctype html>
 <section id="antigo" class="on">
   <h2>Lista para um usuário antigo</h2>
   <label for="u1">Usuário</label>
-  <input id="u1" value="Torsten">
+  <div class="ac"><input id="u1" value="Torsten" autocomplete="off"><div class="hits" id="hu1"></div></div>
   <button data-random="u1">Usuário aleatório</button>
   <button id="go1">Recomendar</button>
   <div class="result" id="r1"></div>
@@ -110,8 +146,8 @@ PAGE = """<!doctype html>
   <input id="s2" placeholder="Nome do jogo">
   <div class="hits" id="h2"></div>
   <table><thead><tr><th>Jogo</th><th>Nota</th></tr></thead><tbody id="form2"></tbody></table>
-  <h3>Filtros (opcionais)</h3>
-  <div class="filters">
+  <label class="toggle"><input type="checkbox" id="use-filters"> Usar filtros</label>
+  <div class="filters off" id="filters">
     <div><label for="f-players">Jogadores</label><input id="f-players" type="number" min="1" max="20"></div>
     <div><label for="f-minutes">Duração máxima (min)</label><input id="f-minutes" type="number" min="5" step="5"></div>
     <div><label for="f-age">Idade do mais novo</label><input id="f-age" type="number" min="1" max="21"></div>
@@ -123,9 +159,10 @@ PAGE = """<!doctype html>
 </section>
 
 <section id="item">
+  <aside id="rated3"></aside>
   <h2>Item novo para um usuário antigo</h2>
   <label for="u3">Usuário</label>
-  <input id="u3" value="Torsten">
+  <div class="ac"><input id="u3" value="Torsten" autocomplete="off"><div class="hits" id="hu3"></div></div>
   <button data-random="u3">Usuário aleatório</button>
   <label for="s3">Simular com um jogo existente (ignora as avaliações dele)</label>
   <input id="s3" placeholder="Nome do jogo">
@@ -136,6 +173,14 @@ PAGE = """<!doctype html>
   <select id="cat3" multiple size="6"></select>
   <label for="mec3">Mecânicas (Ctrl para escolher várias)</label>
   <select id="mec3" multiple size="6"></select>
+  <div class="filters" id="num3">
+    <div><label for="i-weight">Complexidade (1 a 5)</label><input id="i-weight" type="number" min="1" max="5" step="0.1"></div>
+    <div><label for="i-minutes">Duração (min)</label><input id="i-minutes" type="number" min="5" step="5"></div>
+    <div><label for="i-pmin">Jogadores de</label><input id="i-pmin" type="number" min="1" max="20"></div>
+    <div><label for="i-pmax">até</label><input id="i-pmax" type="number" min="1" max="100"></div>
+    <div><label for="i-age">Idade mínima</label><input id="i-age" type="number" min="1" max="21"></div>
+  </div>
+  <p>Campos em branco não entram na semelhança.</p>
   <p><button id="go3">Prever</button></p>
   <div class="result" id="r3"></div>
 </section>
@@ -169,11 +214,31 @@ function makeTable(headers, rows) {
   return t;
 }
 
-const fmt = v => v === null ? "-" : v.toFixed(2);
+const fmt = v => v === null ? "-" : v.toLocaleString("pt-BR", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmtInt = v => v.toLocaleString("pt-BR");
+
+function profile(perfil) {
+  const box = el("div");
+  box.className = "perfil";
+  [["Avaliações", fmtInt(perfil.avaliacoes)], ["Média", fmt(perfil.media)],
+   ["Desvio", fmt(perfil.desvio)], ["Usuários similares", fmtInt(perfil.similares)]].forEach(([label, value]) => {
+    const card = el("div");
+    card.append(el("b", value), el("span", label));
+    box.appendChild(card);
+  });
+  return box;
+}
 
 function showList(box, data) {
+  const head = [];
+  if (data.perfil) head.push(profile(data.perfil));
+  if (data.resumo) {
+    const p = el("p", data.resumo);
+    p.className = "aviso";
+    head.push(p);
+  }
   box.replaceChildren(
-    el("p", data.resumo),
+    ...head,
     makeTable(["#", "Jogo", "Ano", "Pontuação", "Nota", "Similaridade", "Método"],
       data.itens.map((x, i) => [
         i + 1, x.nome, x.ano, fmt(x.pontuacao), fmt(x.nota), fmt(x.similaridade), x.metodo]))
@@ -209,6 +274,44 @@ function setupSearch(input, hits, onPick) {
   });
 }
 
+function setupUserSearch(input, hits) {
+  let timer, pos = -1;
+  const buttons = () => [...hits.querySelectorAll("button")];
+  const close = () => { hits.replaceChildren(); pos = -1; };
+  const pick = name => { input.value = name; close(); input.dispatchEvent(new Event("change")); };
+  input.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const q = input.value.trim();
+      const found = q ? await api("/api/usuarios?q=" + encodeURIComponent(q)) : [];
+      if (input.value.trim() !== q) return;
+      pos = -1;
+      hits.replaceChildren(...found.map(u => {
+        const b = el("button");
+        b.type = "button";
+        b.append(el("span", u.usuario), el("small", `${fmtInt(u.avaliacoes)} avaliações`));
+        b.onmousedown = e => { e.preventDefault(); pick(u.usuario); };
+        return b;
+      }));
+    }, 150);
+  });
+  input.addEventListener("keydown", e => {
+    const list = buttons();
+    if (!list.length) return;
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      pos = (pos + (e.key === "ArrowDown" ? 1 : -1) + list.length) % list.length;
+      list.forEach((b, i) => b.classList.toggle("sel", i === pos));
+    } else if (e.key === "Enter" && pos >= 0) {
+      e.preventDefault();
+      pick(list[pos].firstChild.textContent);
+    } else if (e.key === "Escape") {
+      close();
+    }
+  });
+  input.addEventListener("blur", close);
+}
+
 function addRating(game, value) {
   if (document.querySelector(`#form2 input[data-id="${game.id}"]`)) return;
   const tr = $("form2").insertRow();
@@ -228,7 +331,38 @@ document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
 
 document.querySelectorAll("[data-random]").forEach(b => b.onclick = async () => {
   $(b.dataset.random).value = (await api("/api/random-user")).usuario;
+  $(b.dataset.random).dispatchEvent(new Event("change"));
 });
+
+setupUserSearch($("u1"), $("hu1"));
+setupUserSearch($("u3"), $("hu3"));
+
+// Lista lateral com as notas do usuario da secao 3; o jogo simulado aparece riscado.
+let ratedTimer, ratedGames = null;
+function drawRated(data) {
+  if (!data) return $("rated3").replaceChildren();
+  const table = makeTable(["Jogo", "Nota"], data.jogos.map(g => [g.nome, g.nota.toLocaleString("pt-BR", {minimumFractionDigits: 1})]));
+  data.jogos.forEach((g, i) => { if (g.id === ignoreGame) table.rows[i + 1].className = "ignorado"; });
+  const scroll = el("div");
+  scroll.className = "scroll";
+  scroll.appendChild(table);
+  $("rated3").replaceChildren(el("h3", `Jogos de ${data.usuario}`),
+    el("p", `${fmtInt(data.jogos.length)} avaliações, média ${fmt(data.media)}`), scroll);
+}
+function loadRated() {
+  clearTimeout(ratedTimer);
+  ratedTimer = setTimeout(async () => {
+    const name = $("u3").value.trim();
+    let data = null;
+    try { if (name) data = await api("/api/avaliacoes?usuario=" + encodeURIComponent(name)); } catch (err) {}
+    if ($("u3").value.trim() !== name) return;
+    ratedGames = data;
+    drawRated(data);
+  }, 300);
+}
+$("u3").addEventListener("input", loadRated);
+$("u3").addEventListener("change", loadRated);
+loadRated();
 
 $("go1").onclick = () => run($("r1"), $("go1"), async () => {
   showList($("r1"), await api("/api/antigo", {usuario: $("u1").value.trim()}));
@@ -242,13 +376,22 @@ $("fill").onclick = () => {
 };
 $("clear").onclick = () => document.querySelectorAll("#form2 input").forEach(i => i.value = "");
 
+// Com a caixa desmarcada, os campos ficam bloqueados e nenhum filtro e enviado.
+function syncFilters() {
+  const on = $("use-filters").checked;
+  $("filters").classList.toggle("off", !on);
+  $("filters").querySelectorAll("input").forEach(i => i.disabled = !on);
+}
+$("use-filters").onchange = syncFilters;
+syncFilters();
+
 $("go2").onclick = () => run($("r2"), $("go2"), async () => {
   const notas = {};
   document.querySelectorAll("#form2 input").forEach(i => {
     if (i.value !== "") notas[i.dataset.id] = Number(i.value);
   });
   const filtros = {};
-  [["jogadores", "f-players"], ["minutos", "f-minutes"], ["idade", "f-age"],
+  if ($("use-filters").checked) [["jogadores", "f-players"], ["minutos", "f-minutes"], ["idade", "f-age"],
    ["complexidade_min", "f-wmin"], ["complexidade_max", "f-wmax"]].forEach(([key, id]) => {
     if ($(id).value !== "") filtros[key] = Number($(id).value);
   });
@@ -256,12 +399,18 @@ $("go2").onclick = () => run($("r2"), $("go2"), async () => {
 });
 
 setupSearch($("s2"), $("h2"), g => addRating(g));
+// Campos numericos do item novo e a chave que a API espera para cada um.
+const ITEM_FIELDS = [["averageweight", "i-weight"], ["playingtime", "i-minutes"],
+  ["minplayers", "i-pmin"], ["maxplayers", "i-pmax"], ["minage", "i-age"]];
+
 setupSearch($("s3"), $("h3"), g => {
   ignoreGame = g.id;
   $("name3").value = g.nome;
   [["cat3", g.categorias], ["mec3", g.mecanicas]].forEach(([id, chosen]) => {
     [...$(id).options].forEach(o => o.selected = chosen.includes(o.value));
   });
+  ITEM_FIELDS.forEach(([key, id]) => $(id).value = g[key] ?? "");
+  drawRated(ratedGames);
 });
 
 $("go3").onclick = () => run($("r3"), $("go3"), async () => {
@@ -271,18 +420,20 @@ $("go3").onclick = () => run($("r3"), $("go3"), async () => {
     usuario: $("u3").value.trim(),
     categorias: selected("cat3"),
     mecanicas: selected("mec3"),
+    numeros: Object.fromEntries(ITEM_FIELDS.map(([key, id]) => [key, $(id).value === "" ? null : Number($(id).value)])),
     ignorar: ignoreGame,
   });
   const parts = [el("p", d.resumo)];
   if (d.parecidos) parts.push(el("h3", "Jogos do usuário usados na previsão"), makeTable(
     ["Jogo", "Nota do usuário", "Similaridade"],
-    d.parecidos.map(x => [x.nome, x.nota.toFixed(1), x.similaridade.toFixed(2)])));
+    d.parecidos.map(x => [x.nome, x.nota.toLocaleString("pt-BR", {minimumFractionDigits: 1}), fmt(x.similaridade)])));
   parts.unshift(el("h3", nome));
   $("r3").replaceChildren(...parts);
 });
 
-// Mudar categorias ou mecanicas a mao deixa de simular o jogo escolhido.
-["cat3", "mec3"].forEach(id => $(id).addEventListener("change", () => { ignoreGame = null; }));
+// Mudar as caracteristicas a mao deixa de simular o jogo escolhido.
+["cat3", "mec3", ...ITEM_FIELDS.map(([, id]) => id)]
+  .forEach(id => $(id).addEventListener("change", () => { ignoreGame = null; drawRated(ratedGames); }));
 
 api("/api/opcoes").then(o => {
   o.populares.forEach(g => addRating(g));
@@ -294,6 +445,12 @@ api("/api/opcoes").then(o => {
 </body>
 </html>
 """
+
+
+def br(value, decimals=0):
+    """Numero no formato brasileiro: 1.234 e 6,88."""
+    text = f"{value:,.{decimals}f}"
+    return text.replace(",", "_").replace(".", ",").replace("_", ".")
 
 
 class BadRequest(Exception):
@@ -311,6 +468,11 @@ class Recommender:
         n_ratings = np.diff(self.data.by_user.indptr)
         self.active_users = np.flatnonzero(n_ratings >= MIN_RATINGS_RANDOM_USER)
         self.by_reviews = self.data.game_ids[np.argsort(-np.diff(self.data.by_game.indptr), kind="stable")]
+        # Nomes em minusculas e ordenados, para achar por prefixo com busca binaria.
+        self.n_ratings = n_ratings
+        lower = np.char.lower(self.data.users)
+        self.user_order = np.argsort(lower, kind="stable")
+        self.sorted_lower = lower[self.user_order]
 
     def game_json(self, game_id):
         info = self.games.loc[game_id]
@@ -321,6 +483,7 @@ class Recommender:
             "ano": None if math.isnan(year) else int(year),
             "categorias": info["boardgamecategory"],
             "mecanicas": info["boardgamemechanic"],
+            **{col: None if math.isnan(info[col]) else round(float(info[col]), 2) for col in rec.NUMERIC_FEATURES},
         }
 
     def options(self):
@@ -336,8 +499,31 @@ class Recommender:
         found = found.sort_values("board_game_rank").head(SEARCH_LIMIT)
         return [self.game_json(g) for g in found.index]
 
+    def search_users(self, query):
+        """Usuarios cujo nome comeca com query (sem diferenciar maiusculas), os mais ativos primeiro."""
+        query = query.strip().lower()
+        if not query:
+            return []
+        start, end = np.searchsorted(self.sorted_lower, [query, query + "\U0010ffff"])
+        matches = self.user_order[start:end]
+        if len(matches) > USER_SEARCH_LIMIT:
+            matches = matches[np.argpartition(-self.n_ratings[matches], USER_SEARCH_LIMIT)[:USER_SEARCH_LIMIT]]
+        matches = sorted(matches.tolist(), key=lambda u: (-self.n_ratings[u], self.data.users[u]))
+        return [{"usuario": str(self.data.users[u]), "avaliacoes": int(self.n_ratings[u])} for u in matches]
+
     def random_user(self):
         return {"usuario": str(self.data.users[random.choice(self.active_users.tolist())])}
+
+    def user_ratings(self, name):
+        """Jogos que o usuario avaliou, da maior para a menor nota."""
+        user = self.require_user(name)
+        row = self.data.by_user[user]
+        games = [
+            {"id": int(g), "nome": self.games.at[g, "name"], "nota": float(r)}
+            for g, r in zip(self.data.game_ids[row.indices].tolist(), row.data.tolist())
+        ]
+        games.sort(key=lambda g: (-g["nota"], g["nome"]))
+        return {"usuario": str(self.data.users[user]), "media": float(self.data.means[user]), "jogos": games}
 
     def require_user(self, name):
         user = rec.find_user(self.data, name or "")
@@ -347,7 +533,7 @@ class Recommender:
             raise BadRequest(f"Usuário '{name}' não encontrado.{hint}")
         return user
 
-    def list_json(self, table, summary):
+    def list_json(self, table, summary, profile=None):
         items = []
         for row in table.itertuples():
             game = self.game_json(row.game_id)
@@ -359,16 +545,21 @@ class Recommender:
                 "pontuacao": None if math.isnan(row.pontuacao) else float(row.pontuacao),
                 "metodo": row.metodo,
             })
-        return {"resumo": summary, "itens": items}
+        return {"resumo": summary, "perfil": profile, "itens": items}
 
     def old_user(self, body):
         user = self.require_user(body.get("usuario"))
-        table, n_scored, n_similar = rec.recommend_existing_user(self.data, self.games, user)
-        summary = (
-            f"{self.data.by_user[user].nnz} avaliações, média {self.data.means[user]:.2f}, "
-            f"desvio {self.data.stds[user]:.2f}. {n_similar:,} usuários similares; {n_scored:,} jogos com nota."
-        )
-        return self.list_json(table, summary)
+        table, _, n_similar = rec.recommend_existing_user(self.data, self.games, user)
+        profile = {
+            "avaliacoes": int(self.data.by_user[user].nnz),
+            "media": float(self.data.means[user]),
+            "desvio": float(self.data.stds[user]),
+            "similares": n_similar,
+        }
+        summary = None
+        if self.data.stds[user] < rec.EPS:
+            summary = "Este usuário deu a mesma nota a tudo: sem Pearson possível, a lista vem da popularidade."
+        return self.list_json(table, summary, profile)
 
     def new_user(self, body):
         ratings = {}
@@ -390,14 +581,14 @@ class Recommender:
                 raise BadRequest("Nenhum jogo atende a esses filtros.")
         table, n_scored, n_similar = rec.recommend_new_user(self.data, self.games, ratings, filters=filters)
         if n_similar:
-            summary = f"{len(ratings)} notas. {n_similar:,} usuários similares; {n_scored:,} jogos com nota."
+            summary = f"{len(ratings)} notas. {br(n_similar)} usuários similares; {br(n_scored)} jogos com nota."
         else:
             summary = (
                 f"{len(ratings)} notas: sem vizinhos para calcular (são necessárias ao menos "
                 f"{rec.MIN_COMMON} notas diferentes entre si). Lista por popularidade."
             )
         if n_allowed is not None:
-            summary += f" {n_allowed:,} jogos atendem aos filtros."
+            summary += f" {br(n_allowed)} jogos atendem aos filtros."
         return self.list_json(table, summary)
 
     def parse_filters(self, raw):
@@ -425,19 +616,28 @@ class Recommender:
         categories, mechanics = body.get("categorias", []), body.get("mecanicas", [])
         if not categories and not mechanics:
             raise BadRequest("Escolha ao menos uma categoria ou mecânica.")
+        try:
+            numbers = {col: None if v is None else float(v)
+                       for col, v in body.get("numeros", {}).items() if col in rec.NUMERIC_FEATURES}
+        except (AttributeError, TypeError, ValueError):
+            raise BadRequest("Características numéricas inválidas.")
+        if None not in (numbers.get("minplayers"), numbers.get("maxplayers")) \
+                and numbers["minplayers"] > numbers["maxplayers"]:
+            raise BadRequest("O mínimo de jogadores é maior que o máximo.")
         ignore = body.get("ignorar")
-        result = rec.predict_new_item(self.data, self.games, user, categories, mechanics, ignore)
+        item = {"categories": categories, "mechanics": mechanics, **numbers}
+        result = rec.predict_new_item(self.data, self.games, user, item, ignore)
         if result is None:
             return {"resumo": "Nenhum jogo do usuário tem categoria ou mecânica em comum: não há como prever."}
         verdict = "Recomendar" if result["recomendar"] else "Não recomendar"
         summary = (
-            f"{verdict}: nota prevista {result['nota']:.2f}, "
-            f"média do usuário {result['media_usuario']:.2f}."
+            f"{verdict}: nota prevista {br(result['nota'], 2)}, "
+            f"média do usuário {br(result['media_usuario'], 2)}."
         )
         if ignore is not None:
             real = self.data.by_user[user, np.searchsorted(self.data.game_ids, ignore)]
             if real:
-                summary += f" Nota real do usuário neste jogo: {float(real):.1f}."
+                summary += f" Nota real do usuário neste jogo: {br(float(real), 1)}."
         similar = [
             {"nome": self.games.loc[p["game_id"], "name"], "nota": p["nota"], "similaridade": p["similaridade"]}
             for p in result["parecidos"]
@@ -472,6 +672,12 @@ def make_handler(recommender):
                 self.respond(recommender.options)
             elif url.path == "/api/random-user":
                 self.respond(recommender.random_user)
+            elif url.path == "/api/usuarios":
+                query = parse_qs(url.query).get("q", [""])[0]
+                self.respond(lambda: recommender.search_users(query))
+            elif url.path == "/api/avaliacoes":
+                name = parse_qs(url.query).get("usuario", [""])[0]
+                self.respond(lambda: recommender.user_ratings(name))
             elif url.path == "/api/search":
                 query = parse_qs(url.query).get("q", [""])[0]
                 self.respond(lambda: recommender.search(query))

@@ -22,7 +22,7 @@ A apresentação está em [`apresentacao/recomendador-bgg.pptx`](apresentacao/re
 - `bgg-26m-reviews.csv`: uma linha por avaliação (usuário, jogo, nota de 1 a 10, comentário);
 - `games_detailed_info2025.csv`: metadados dos 27.780 jogos.
 
-Depois da limpeza: 26.195.766 avaliações de 555.415 usuários (99,83% da matriz usuário × jogo vazia).
+Depois da limpeza: 26.195.700 avaliações de 555.414 usuários (99,83% da matriz usuário × jogo vazia).
 
 ## Estrutura
 
@@ -40,33 +40,108 @@ data/            dados brutos e limpos (fora do Git)
 
 ## Como rodar
 
-Requer Python 3.11+ e cerca de 8 GB de RAM.
+Requisitos: [Python](https://www.python.org/downloads/) 3.11 ou mais novo, [Git](https://git-scm.com/downloads)
+e cerca de 8 GB de RAM livre. Todos os comandos são rodados na pasta do projeto: no Windows, no
+PowerShell; no Linux e no macOS, no Terminal.
+
+### 1. Baixar o projeto
 
 ```bash
+git clone https://github.com/LucaWBohnenberger/Trabalho-Final-de-Recomendacao.git
+cd Trabalho-Final-de-Recomendacao
+```
+
+### 2. Criar o ambiente e instalar as dependências
+
+**Linux e macOS**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-mkdir -p data/raw
-for f in bgg-26m-reviews.csv games_detailed_info2025.csv; do
-  curl -L -o data/raw/$f "https://www.kaggle.com/api/v1/datasets/download/jvanelteren/boardgamegeek-reviews/$f"
-done
-
-python3 src/clean.py       # ~7 min; grava data/clean/
-python3 src/describe.py    # grava resultados/estatisticas.json
-python3 src/app.py         # http://127.0.0.1:8000
 ```
 
-A primeira execução de `recommend.py`, `app.py` ou `evaluate.py` monta um cache das matrizes
-esparsas em `data/clean/ratings_cache.npz` (cerca de 1 minuto); as seguintes carregam em segundos.
+**Windows (PowerShell)**
 
-Também dá para recomendar direto no terminal:
+```powershell
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Se o PowerShell recusar o `Activate.ps1` por política de execução, rode antes
+`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` e confirme.
+
+Com o ambiente ativo, o comando do Python é `python` nos três sistemas. Em um terminal novo,
+ative o ambiente de novo (segunda linha do bloco acima) antes de rodar os passos seguintes.
+
+### 3. Colocar os dados
+
+Os dados não ficam no Git (são grandes demais). Entre na página
+[jvanelteren/boardgamegeek-reviews](https://www.kaggle.com/datasets/jvanelteren/boardgamegeek-reviews)
+do Kaggle (precisa de login), baixe só estes dois arquivos e descompacte se vierem em `.zip`:
+
+- `bgg-26m-reviews.csv` (2,2 GB)
+- `games_detailed_info2025.csv` (110 MB)
+
+Crie a pasta `data/raw` dentro do projeto e coloque os dois arquivos nela:
+
+```
+Trabalho-Final-de-Recomendacao/
+  data/
+    raw/
+      bgg-26m-reviews.csv
+      games_detailed_info2025.csv
+```
+
+### 4. Limpar os dados (uma vez, cerca de 2 minutos)
 
 ```bash
-python3 src/recommend.py Torsten --top 10
+python src/clean.py
 ```
+
+Gera `data/clean/games.csv` e `data/clean/reviews.csv`.
+
+### 5. Abrir a interface
+
+```bash
+python src/app.py
+```
+
+Quando aparecer `Pronto: http://127.0.0.1:8000`, abra esse endereço no navegador. As três abas
+são os três cenários. Para parar o servidor, use Ctrl+C no terminal.
+
+A primeira execução de `app.py`, `recommend.py`, `describe.py` ou `evaluate.py` monta um cache das
+matrizes esparsas em `data/clean/ratings_cache.npz` (menos de 1 minuto); as seguintes carregam
+em segundos.
+
+### Outros comandos (opcionais)
+
+Recomendar direto no terminal, sem interface:
+
+```bash
+python src/recommend.py Torsten --top 10
+```
+
+Refazer as estatísticas descritivas (`resultados/estatisticas.json`):
+
+```bash
+python src/describe.py
+```
+
+Refazer a avaliação (`resultados/avaliacao.json`), descrita na próxima seção:
+
+```bash
+python src/evaluate.py
+```
+
+A avaliação roda em paralelo com `fork`, que só existe no Linux e no macOS. No Windows, rode-a
+pelo [WSL](https://learn.microsoft.com/pt-br/windows/wsl/install). A interface, a limpeza e as
+estatísticas funcionam nos três sistemas.
 
 ## Avaliação
 
-`python3 src/evaluate.py` esconde notas de usuários sorteados, refaz a matriz sem elas e mede
+`python src/evaluate.py` esconde notas de usuários sorteados, refaz a matriz sem elas e mede
 o erro só no que foi escondido. Leva cerca de 30 minutos com 4 processos; `--secoes` roda
 só algumas (`--secoes A,E`).
 
